@@ -2,6 +2,8 @@
 
 A browser-based encryption and decryption tool built to demonstrate the fundamentals of classic cryptographic techniques in a simple, interactive interface.
 
+Live demo: https://data-lock-eight.vercel.app
+
 ## Overview
 
 Data-Lock lets users encrypt or decrypt text using well-known techniques directly in the browser, with no backend or server-side processing involved. It is intended as an educational tool for anyone curious about how basic ciphers and encodings work.
