@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption & Decryption</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #303030;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: rgb(158, 152, 152);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        select, input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            word-break: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Encrypt & Decrypt</h1>
+
+        <label for="operation">Choose Operation:</label>
+        <select id="operation">
+            <option value="encrypt">Encrypt</option>
+            <option value="decrypt">Decrypt</option>
+        </select>
+
+        <label for="technique">Choose Technique:</label>
+        <select id="technique">
+            <option value="caesar">Caesar Cipher</option>
+            <option value="xor">XOR Encryption</option>
+            <option value="base64">Base64 Encoding</option>
+        </select>
+
+        <label for="inputData">Enter Data:</label>
+        <input type="text" id="inputData" placeholder="Enter text here">
+
+        <label for="key">Enter Key (if required):</label>
+        <input type="text" id="key" placeholder="Enter key (e.g., shift, XOR key)">
+
+        <button onclick="processData()">Submit</button>
+
+        <div class="result" id="result">Result will appear here</div>
+    </div>
+
+    <script>
+        function caesarCipher(text, shift, isEncrypt) {
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            const shiftAmount = isEncrypt ? shift : -shift;
+            return text
+                .split("")
+                .map(char => {
+                    const index = alphabet.indexOf(char);
+                    if (index === -1) 
+                    return char; // Non-alphabet character remains unchanged
+                    const newIndex = (index + shiftAmount + alphabet.length) % alphabet.length;
+                    return alphabet[newIndex];
+                })
+                .join("");
+        }
+
+        function xorEncrypt(text, key) {
+            return text
+                .split("")
+                .map(char => String.fromCharCode(char.charCodeAt(0) ^ key))
+                .join("");
+        }
+
+        function base64Encode(text) {
+            return btoa(text);
+        }
+
+        function base64Decode(text) {
+            return atob(text);
+        }
+
+        function processData() {
+            const operation = document.getElementById("operation").value;
+            const technique = document.getElementById("technique").value;
+            const inputData = document.getElementById("inputData").value;
+            const key = document.getElementById("key").value;
+
+            let result = "";
+
+            if (!inputData) {
+                alert("Please enter some data!");
+                return;
+            }
+
+            switch (technique) {
+                case "caesar":
+                    if (!key || isNaN(key)) {
+                        alert("Please enter a valid numeric key for Caesar Cipher!");
+                        return;
+                    }
+                    const shift = parseInt(key);
+                    result = caesarCipher(inputData, shift, operation === "encrypt");
+                    break;
+
+                case "xor":
+                    if (!key || isNaN(key)) {
+                        alert("Please enter a valid numeric key for XOR!");
+                        return;
+                    }
+                    result = xorEncrypt(inputData, parseInt(key));
+                    break;
+
+                case "base64":
+                    if (operation === "encrypt") {
+                        result = base64Encode(inputData);
+                    } else {
+                        try {
+                            result = base64Decode(inputData);
+                        } catch (e) {
+                            alert("Invalid Base64 input for decryption!");
+                            return;
+                        }
+                    }
+                    break;
+
+                default:
+                    alert("Invalid technique selected!");
+                    return;
+            }
+
+            document.getElementById("result").innerText = result;
+        }
+    </script>
+</body>
+</html>
